@@ -12,7 +12,7 @@ export default function App() {
   const [authed,         setAuthed]        = useState(null)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/auth/check`, {
+    fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/check`, {
       credentials: 'include',
     })
       .then(r => setAuthed(r.ok))
@@ -38,7 +38,7 @@ export default function App() {
       const formData = new FormData()
       formData.append('image', blob, blob.name || 'capture.jpg')
       formData.append('marker_cm', markerSize)
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/measure`, { method: 'POST', body: formData, credentials: 'include' })
+      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/measure`, { method: 'POST', body: formData, credentials: 'include' })
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.detail || `Server error ${res.status}`)

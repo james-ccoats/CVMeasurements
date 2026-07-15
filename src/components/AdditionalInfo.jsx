@@ -46,7 +46,7 @@ export default function AdditionalInfo({ rowId, athlete, onDone, onBack, onUnaut
   async function handleSubmit() {
     setSaveState('saving')
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/save_additional`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/save_additional`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
