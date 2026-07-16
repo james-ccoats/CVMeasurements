@@ -18,7 +18,7 @@ export default function AthleteSelect({ onSelect, onBack, initialEvent = null, i
     setLoading(true)
     setError(null)
     try {
-      const res  = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events?q=${encodeURIComponent(q)}`, { credentials: 'include' })
+      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/events?q=${encodeURIComponent(q)}`, { credentials: 'include' })
       if (res.status === 401) { onUnauthorized?.(); return }
       const data = await res.json()
       setEvents(data)
@@ -40,7 +40,7 @@ export default function AthleteSelect({ onSelect, onBack, initialEvent = null, i
     setRosterLoading(true)
     setError(null)
     try {
-      const res  = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events/${event.id}/roster`, { credentials: 'include' })
+      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${event.id}/roster`, { credentials: 'include' })
       if (res.status === 401) { onUnauthorized?.(); return }
       const data = await res.json()
       setRoster(data)
@@ -57,7 +57,7 @@ export default function AthleteSelect({ onSelect, onBack, initialEvent = null, i
     // "Actual size" in the browser's PDF viewer is exact. Printing an HTML
     // page sized with CSS units is not reliable -- printer drivers can
     // rescale it regardless of the print dialog's stated scale.
-    window.open(`${import.meta.env.VITE_API_URL || ''}/api/marker/${markerSize}/pdf`, '_blank')
+    window.open(`${import.meta.env.VITE_API_URL}/api/marker/${markerSize}/pdf`, '_blank')
   }
 
   function handleChangeEvent() {
@@ -68,7 +68,7 @@ export default function AthleteSelect({ onSelect, onBack, initialEvent = null, i
 
   async function handlePlayerSelect(player) {
     try {
-      const res    = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/athletes/${player.id}/status`, { credentials: 'include' })
+      const res    = await fetch(`${import.meta.env.VITE_API_URL}/api/athletes/${player.id}/status`, { credentials: 'include' })
       if (res.status === 401) { onUnauthorized?.(); return }
       const status = await res.json()
       onSelect({ ...player, status, event_id: selectedEvent.id }, markerSize)

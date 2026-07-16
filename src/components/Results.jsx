@@ -133,7 +133,7 @@ export default function Results({ results, error, warnings, athlete, rowId, onRe
     if (!athlete || !display.height_cm || !display.wingspan_cm || !display.hand_width_cm) return
     setSaveState('saving')
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/save`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
