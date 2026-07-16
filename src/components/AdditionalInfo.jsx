@@ -34,7 +34,7 @@ const GROUPS = [
   },
 ]
 
-export default function AdditionalInfo({ rowId, athlete, onDone, onBack, onUnauthorized }) {
+export default function AdditionalInfo({ rowId, athlete, onDone, onBack }) {
   const [values, setValues]     = useState({})
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved | error
 
@@ -49,10 +49,8 @@ export default function AdditionalInfo({ rowId, athlete, onDone, onBack, onUnaut
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/save_additional`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ row_id: rowId, ...values }),
       })
-      if (res.status === 401) { onUnauthorized?.(); return }
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.detail || `Server error ${res.status}`)
