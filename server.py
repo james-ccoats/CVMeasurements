@@ -35,10 +35,21 @@ def _verify_token(token: str) -> bool:
     except Exception:
         return False
 
+# ── CORS — credentials require explicit origins (no wildcard) ─────────────────
+ALLOWED_ORIGINS = [
+    o.strip() for o in
+    os.environ.get(
+        "ALLOWED_ORIGINS",
+        "https://localhost:5173,http://localhost:5173"
+    ).split(",")
+    if o.strip()
+]
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -181,14 +192,14 @@ async def login(req: LoginRequest, response: Response):
         max_age=COOKIE_MAX_AGE,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
     )
     return {"ok": True}
 
 
 @app.post("/api/logout")
 async def logout(response: Response):
-    response.delete_cookie(key="cse_auth", samesite="lax", secure=True)
+    response.delete_cookie(key="cse_auth", samesite="none", secure=True)
     return {"ok": True}
 
 
