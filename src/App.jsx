@@ -1,26 +1,12 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import Camera from './components/Camera.jsx'
 import Results from './components/Results.jsx'
 import Instructions from './components/Instructions.jsx'
 import AthleteSelect from './components/AthleteSelect.jsx'
 import AdditionalInfo from './components/AdditionalInfo.jsx'
-import Login from './components/Login.jsx'
 import './App.css'
 
 export default function App() {
-  // null = checking, false = show login, true = authenticated
-  const [authed,         setAuthed]        = useState(null)
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/check`, {
-      credentials: 'include',
-    })
-      .then(r => setAuthed(r.ok))
-      .catch(() => setAuthed(false))
-  }, [])
-
-  const handleUnauthorized = useCallback(() => setAuthed(false), [])
-
   const [screen,         setScreen]        = useState('instructions')
   const [processing,     setProcessing]    = useState(false)
   const [results,        setResults]       = useState(null)
@@ -38,7 +24,7 @@ export default function App() {
       const formData = new FormData()
       formData.append('image', blob, blob.name || 'capture.jpg')
       formData.append('marker_cm', markerSize)
-      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/measure`, { method: 'POST', body: formData, credentials: 'include' })
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/measure`, { method: 'POST', body: formData })
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.detail || `Server error ${res.status}`)
@@ -93,13 +79,6 @@ export default function App() {
     setScreen('camera')
   }, [])
 
-  if (authed === null) {
-    return <div className="loading-screen"><div className="spinner" /></div>
-  }
-  if (authed === false) {
-    return <Login onSuccess={() => setAuthed(true)} />
-  }
-
   if (screen === 'instructions') {
     return <Instructions onStart={() => setScreen('athlete')} />
   }
@@ -111,7 +90,6 @@ export default function App() {
         initialEvent={selectedEvent}
         initialRoster={roster}
         onEventChange={handleEventChange}
-        onUnauthorized={handleUnauthorized}
       />
     )
   }
@@ -125,7 +103,6 @@ export default function App() {
         athlete={athlete}
         onDone={handleAdditionalDone}
         onBack={handleBackToResults}
-        onUnauthorized={handleUnauthorized}
       />
     )
   }
@@ -138,7 +115,6 @@ export default function App() {
       rowId={rowId}
       onRetry={handleRetry}
       onContinue={handleContinueToAdditional}
-      onUnauthorized={handleUnauthorized}
     />
   )
 }
